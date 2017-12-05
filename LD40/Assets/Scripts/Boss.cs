@@ -94,7 +94,7 @@ public class Boss : MonoBehaviour {
 			yield return new WaitForSeconds(0.5f);
 		}
 
-		while (health > 150)
+		while (health > 30)
 		{
 			HomingAttack();
 			yield return new WaitForSeconds(0.4f);
