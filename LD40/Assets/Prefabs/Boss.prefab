@@ -537,10 +537,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ede437337ed83047ac8e12c793476c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 15
+  health: 20
   hurtParticles: {fileID: 198817793966871500}
   hurtSpriteEye: {fileID: 21300000, guid: 817898c6f9c9b63468e1ff5cdfcdbe01, type: 3}
   hurtSpritePupil: {fileID: 21300000, guid: c4c8871cdc99af849a2a70937a373396, type: 3}
+  hurtSound: {fileID: 8300000, guid: 6347832b5b077594cbd48e948a8eede4, type: 3}
+  deathSound: {fileID: 8300000, guid: 6b5c2b36a843ebc488ac42ce5739d0c4, type: 3}
 --- !u!114 &114895984043196914
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -552,10 +554,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ede437337ed83047ac8e12c793476c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 15
+  health: 20
   hurtParticles: {fileID: 198007968777639152}
   hurtSpriteEye: {fileID: 21300000, guid: 817898c6f9c9b63468e1ff5cdfcdbe01, type: 3}
   hurtSpritePupil: {fileID: 21300000, guid: c4c8871cdc99af849a2a70937a373396, type: 3}
+  hurtSound: {fileID: 8300000, guid: 6347832b5b077594cbd48e948a8eede4, type: 3}
+  deathSound: {fileID: 8300000, guid: 6b5c2b36a843ebc488ac42ce5739d0c4, type: 3}
 --- !u!114 &114933817609411432
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -571,10 +575,12 @@ MonoBehaviour:
   - {fileID: 4938506249217430}
   - {fileID: 4787437248429152}
   state: 0
-  health: 60
+  health: 120
   laserPrefab: {fileID: 1591699289206242, guid: 8260f2c0f271a3e47aa318138d40de90,
     type: 2}
   bossDeathAnim: {fileID: 7400000, guid: 8cfc182eb2ec2d74a8193a1b61422d8a, type: 2}
+  hurtSound: {fileID: 8300000, guid: 6347832b5b077594cbd48e948a8eede4, type: 3}
+  deathSound: {fileID: 8300000, guid: 6b5c2b36a843ebc488ac42ce5739d0c4, type: 3}
   laserRotationSpeed: 20
 --- !u!198 &198007968777639152
 ParticleSystem:

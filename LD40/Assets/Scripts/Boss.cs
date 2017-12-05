@@ -12,6 +12,8 @@ public class Boss : MonoBehaviour {
 	Transform player;
 	public GameObject laserPrefab;
 	public AnimationClip bossDeathAnim;
+	public AudioClip hurtSound;
+	public AudioClip deathSound;
 
 	//Whether any eyes are alive
 	int EyesAlive
@@ -72,6 +74,7 @@ public class Boss : MonoBehaviour {
 		{
 			health -= 1;
 			Destroy(collision.gameObject);
+			Camera.main.GetComponent<AudioSource>().PlayOneShot(hurtSound);
 			if(Dead)
 			{
 				Kill();
@@ -94,7 +97,7 @@ public class Boss : MonoBehaviour {
 			yield return new WaitForSeconds(0.5f);
 		}
 
-		while (health > 30)
+		while (health > 60)
 		{
 			HomingAttack();
 			yield return new WaitForSeconds(0.4f);
@@ -185,15 +188,43 @@ public class Boss : MonoBehaviour {
 		//Minion logic
 		if(laserMinionTimer < 0)
 		{
-			int min1 = Random.Range(0, BossManager.Instance.minions.Count- 1);
-			int min2 = Random.Range(0, BossManager.Instance.minions.Count - 1);
-			while(min2 == min1)
+			if (BossManager.Instance.minions.Count > 1)
 			{
-				min2 = Random.Range(0, BossManager.Instance.minions.Count - 1);
+				int min1 = Random.Range(0, BossManager.Instance.minions.Count - 1);
+				int min2 = Random.Range(0, BossManager.Instance.minions.Count - 1);
+				while (min2 == min1)
+				{
+					min2 = Random.Range(0, BossManager.Instance.minions.Count - 1);
+				}
+				MinionShootHoming(min1, player.position);
+				MinionShootHoming(min2, player.position);
+
+				//More bullets if more minions!
+				//Effecient and optomized code I swear it
+				if (BossManager.Instance.minions.Count > 10)
+				{
+					int min3 = Random.Range(0, BossManager.Instance.minions.Count - 1);
+					int min4 = Random.Range(0, BossManager.Instance.minions.Count - 1);
+					while (min3 != min1 && min3 != min2)
+					{
+						min3 = Random.Range(0, BossManager.Instance.minions.Count - 1);
+					}
+					while (min4 != min1 && min4 != min2 && min4 != min3)
+					{
+						min4 = Random.Range(0, BossManager.Instance.minions.Count - 1);
+					}
+					MinionShootHoming(min3, player.position);
+					MinionShootHoming(min4, player.position);
+				}
+
+				IntervalAttack();
+				laserMinionTimer = 2;
 			}
-			MinionShootHoming(min1, player.position);
-			MinionShootHoming(min2, player.position);
-			laserMinionTimer = 2;
+			else if(BossManager.Instance.minions.Count == 1)
+			{
+				MinionShootHoming(0, player.position);
+				laserMinionTimer = 2;
+			}
 		}
 
 		//Waiting
@@ -378,6 +409,7 @@ public class Boss : MonoBehaviour {
 			Destroy(laser);
 		}
 		transform.Find("moutch_sprite").GetComponent<Animator>().Play("Boss_MoutchDeath");
+		Camera.main.GetComponent<AudioSource>().PlayOneShot(deathSound);
 		//GetComponent<Animator>().Play(bossDeathAnim.name);
 		Destroy(gameObject, bossDeathAnim.length);
 	}

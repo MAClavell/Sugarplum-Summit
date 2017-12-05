@@ -10,6 +10,8 @@ public class BossEye : MonoBehaviour {
 	public Sprite hurtSpritePupil;
 	SpriteRenderer sprite;
 	SpriteRenderer spritePupil;
+	public AudioClip hurtSound;
+	public AudioClip deathSound;
 
 	public bool Dead
 	{
@@ -33,6 +35,7 @@ public class BossEye : MonoBehaviour {
 		sprite.sprite = hurtSpriteEye;
 		spritePupil.sprite = hurtSpritePupil;
 		spritePupil.transform.localScale = new Vector3(2.5f, 1.5f, 2.5f);
+		Camera.main.GetComponent<AudioSource>().PlayOneShot(deathSound);
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -42,7 +45,8 @@ public class BossEye : MonoBehaviour {
 			health -= 1;
 			hurtParticles.Play();
 			Destroy(collision.gameObject);
-			if(Dead)
+			Camera.main.GetComponent<AudioSource>().PlayOneShot(hurtSound);
+			if (Dead)
 			{
 				ChangeToDead();
 			}

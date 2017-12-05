@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public enum GameState { SHMUP, BOSS}
 
@@ -26,7 +27,7 @@ public class GameManager : MonoBehaviour {
 	Camera cameraMain;
 
 	//UI vars
-	public Text uiText;
+	public TextMeshProUGUI uiText;
 	public GameObject GOUI;
 
 	//Singleton

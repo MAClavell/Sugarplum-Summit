@@ -229,7 +229,7 @@ public class BossManager : MonoBehaviour {
 	{
 		bossCreated = true;
 		bossPosition = bgMove.bossBG.position;
-		bossPosition.y += 3.6f;
+		bossPosition.y += 4.2f;
 		boss = Instantiate(bossPrefab, bossPosition, Quaternion.identity).transform;
 	}
 }
