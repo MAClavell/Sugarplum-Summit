@@ -1,0 +1,9 @@
+{
+"TOTAL_MEMORY": 268435456,
+"dataUrl": "Sugarplum Summit.data.unityweb",
+"asmCodeUrl": "Sugarplum Summit.asm.code.unityweb",
+"asmMemoryUrl": "Sugarplum Summit.asm.memory.unityweb",
+"asmFrameworkUrl": "Sugarplum Summit.asm.framework.unityweb",
+"splashScreenStyle": "Dark",
+"backgroundColor": "#222C36"
+}
