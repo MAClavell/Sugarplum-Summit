@@ -10,11 +10,15 @@ public class OrnamentScript : MonoBehaviour {
 	public float bottomBound;
 	public ParticleSystem hurtParticles;
 	public ParticleSystem breakParticles;
+	public AnimationClip hurtAnim;
+	Animator animator;
+	public AudioClip hurtSound;
 
 	// Use this for initialization
 	void Start () {
 		position = transform.position;
 		bottomBound = EnemyManager.Instance.bottomBound;
+		animator = GetComponentInChildren<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -41,6 +45,8 @@ public class OrnamentScript : MonoBehaviour {
 			health -= 1;
 			Destroy(collision.gameObject);
 			hurtParticles.Play();
+			Camera.main.GetComponent<AudioSource>().PlayOneShot(hurtSound);
+			animator.Play(hurtAnim.name);
 		}
 	}
 

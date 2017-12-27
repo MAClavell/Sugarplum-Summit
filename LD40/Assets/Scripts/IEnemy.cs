@@ -9,9 +9,11 @@ public class IEnemy : MonoBehaviour {
 	public int health;
 	public bool killable;
 	public bool deathAnimation;
+	public bool hurtSound;
 	public bool deathSound;
 	public AnimationClip hurtAnim;
 	public AnimationClip deathAnim;
+	public AudioClip hurtSoundClip;
 	public AudioClip deathSoundClip;
 	public ParticleSystem hurtParticles;
 	Animator animator;
@@ -60,6 +62,10 @@ public class IEnemy : MonoBehaviour {
 			animator.Play(hurtAnim.name);
 			hurtParticles.Play();
 			startDead = true;
+			if (hurtSound)
+			{
+				Camera.main.GetComponent<AudioSource>().PlayOneShot(hurtSoundClip);
+			}
 		}
 	}
 }

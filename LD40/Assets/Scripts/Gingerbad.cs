@@ -23,6 +23,7 @@ public class Gingerbad : MonoBehaviour {
 	public float bulletSpeed;
 	float shootTimer;
 	Transform player;
+	public AudioClip shootSoundClip;
 
 	// Use this for initialization
 	void Start () {
@@ -80,6 +81,7 @@ public class Gingerbad : MonoBehaviour {
 			shootTimer = shootInterval;
 			Transform bullet = Instantiate(bulletPrefab).transform;
 			bullet.GetComponent<BulletScript>().Create(transform.Find("Shoot_Point").position, bulletSpeed, true, player.position);
+			Camera.main.GetComponent<AudioSource>().PlayOneShot(shootSoundClip);
 		}
 	}
 
@@ -96,9 +98,17 @@ public class Gingerbad : MonoBehaviour {
 	//Constrain to left and right bounds
 	void Constrain()
 	{
-		if (position.x < leftBound || position.x > rightBound)
+		if (position.x < leftBound)
 		{
 			speed = -speed;
+			position.x = leftBound;
+			transform.position = position;
+		}
+		if(position.x > rightBound)
+		{
+			speed = -speed;
+			position.x = rightBound;
+			transform.position = position;
 		}
 	}
 }

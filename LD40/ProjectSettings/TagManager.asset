@@ -10,6 +10,7 @@ TagManager:
   - Enemy
   - BulletEnemy
   - StartButton
+  - Boss
   layers:
   - Default
   - TransparentFX
@@ -58,4 +59,7 @@ TagManager:
     locked: 0
   - name: Particle
     uniqueID: 1958149053
+    locked: 0
+  - name: Flash
+    uniqueID: 317982483
     locked: 0

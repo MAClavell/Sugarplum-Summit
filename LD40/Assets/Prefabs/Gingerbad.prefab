@@ -219,7 +219,8 @@ MonoBehaviour:
   bulletPrefab: {fileID: 1950897152235008, guid: f44c230bc1c39e849a159eb83af85f0a,
     type: 2}
   shootInterval: 2
-  bulletSpeed: 5
+  bulletSpeed: 6
+  shootSoundClip: {fileID: 8300000, guid: 037e57d84e3c2de469ee64758ada83c5, type: 3}
 --- !u!114 &114552066973246726
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -234,9 +235,11 @@ MonoBehaviour:
   health: 10
   killable: 1
   deathAnimation: 0
+  hurtSound: 1
   deathSound: 1
   hurtAnim: {fileID: 7400000, guid: b7d0adcd9a546b64e88eb30700b1d2ab, type: 2}
   deathAnim: {fileID: 0}
+  hurtSoundClip: {fileID: 8300000, guid: 4ada238989013324685e00788be689ce, type: 3}
   deathSoundClip: {fileID: 8300000, guid: 6347832b5b077594cbd48e948a8eede4, type: 3}
   hurtParticles: {fileID: 198735978523647870}
   startDead: 0

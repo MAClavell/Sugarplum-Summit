@@ -17,7 +17,12 @@ public class Minion : MonoBehaviour {
 	public float moveSpeed;
 	Vector2 position;
 	Transform followTarget;
+	Vector2 followPosition;
 	IFollowable followAtt;
+
+	//Follow timer
+	float followTimer;
+
 
 	//Shooting vars
 	public GameObject bulletPrefab;
@@ -28,12 +33,14 @@ public class Minion : MonoBehaviour {
 	//Bad vars
 	public Vector2 formationPosition;
 	public GameObject evilBulletPrefab;
+	public ParticleSystem deathParticles;
+	public AudioClip deathSound;
 
 	public bool AtFormationPosition
 	{
 		get
 		{
-			return ((formationPosition - (Vector2)transform.position).sqrMagnitude < 0.001f);
+			return ((formationPosition - (Vector2)transform.position).sqrMagnitude < 0.01f);
 		}
 	}
 
@@ -56,15 +63,30 @@ public class Minion : MonoBehaviour {
 				{
 					SHMUPShoot();
 				}
-				if (followAtt.move)
-				{
-					//Get position inbetween target and me
-					Vector2 lerped = Vector2.Lerp(followTarget.position, position, 0.5f);
+				//if (followAtt.move)
+				//{
+					followTimer -= Time.deltaTime;
+					if (followTimer < 0)
+					{
+						followPosition = followTarget.position;
+						followTimer = 0.1f;
+					}
+					Vector2 lerped = Vector2.Lerp(followPosition, position, 0.5f);
 					Vector2 desiredVelocity = (new Vector3(lerped.x - position.x, lerped.y - position.y)).normalized * moveSpeed;
-				
-					//Add velocity and set position
-					position += desiredVelocity * Time.deltaTime;
-				}
+
+				//Add velocity and set position
+				position += desiredVelocity * Time.deltaTime;
+				//}	
+
+				//if (followAtt.move)
+				//{
+				//	//Get position inbetween target and me
+				//	Vector2 lerped = Vector2.Lerp(followTarget.position, position, 0.5f);
+				//	Vector2 desiredVelocity = (new Vector3(lerped.x - position.x, lerped.y - position.y)).normalized * moveSpeed;
+
+				//	//Add velocity and set position
+				//	position += desiredVelocity * Time.deltaTime;
+				//}
 				transform.position = position;
 			}
 		}
@@ -95,6 +117,7 @@ public class Minion : MonoBehaviour {
 
 		followAtt = GetComponent<IFollowable>();
 		GetComponent<IFollowable>().leader = followTarget.GetComponent<IFollowable>();
+		followPosition = followTarget.position;
 
 		goodBadState = MinionStates.Good;
 		bossState = EnemyStates.Enter;
@@ -141,5 +164,15 @@ public class Minion : MonoBehaviour {
 			position += desiredVelocity * Time.deltaTime;
 			transform.position = position;
 		}
+		else position = formationPosition;
+	}
+
+	public void Destroy()
+	{
+		Destroy(gameObject);
+		deathParticles.Play();
+		deathParticles.transform.parent = null;
+		Camera.main.GetComponent<AudioSource>().PlayOneShot(deathSound);
+		Destroy(deathParticles.gameObject, 1f);
 	}
 }

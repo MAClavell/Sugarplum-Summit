@@ -121,30 +121,94 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-	public void CameraShake(float intensity, float length)
+	public void CameraShake(float intensity, float downTick)
 	{
-		StartCoroutine(ShakeMainCamera(intensity, length));
+		StartCoroutine(ShakeMainCamera(intensity, downTick));
 	}
 
-	IEnumerator ShakeMainCamera(float intensity, float length)
+	public void CameraShake(float intensity, float length, float dropoff, float downTick)
 	{
-		float cameraShakeTimer = length;
-		while (cameraShakeTimer > 0)
+		StartCoroutine(ShakeMainCamera(intensity, length, dropoff, downTick));
+	}
+
+	/// <summary>
+	/// Shake the main camera
+	/// </summary>
+	/// <param name="intensity">How powerful the shake is</param>
+	/// <param name="downTick">The interval the shake is reduced by mult by deltatime</param>
+	/// <returns>IEnumerator</returns>
+	IEnumerator ShakeMainCamera(float intensity, float downTick)
+	{
+		float angle;
+		float offsetX;
+		float offsetY;
+
+		while (intensity > 0)
 		{
-			cameraShakeTimer -= Time.deltaTime;
-			Vector3 shake = UnityEngine.Random.insideUnitSphere;
-			shake.z = -10;
-			cameraMain.transform.localPosition = shake * intensity;
+			angle = 10 * intensity * UnityEngine.Random.Range(-1, 1);
+			offsetX = 1 * intensity * UnityEngine.Random.Range(-1, 1);
+			offsetY = 1 * intensity * UnityEngine.Random.Range(-1, 1);
+
+			cameraMain.transform.rotation = Quaternion.Euler(0, 0, angle);
+			cameraMain.transform.position = new Vector3(offsetX, offsetY, -10);
+			intensity -= downTick * Time.deltaTime;
+
 			yield return new WaitForSeconds(0);
 		}
 
 		cameraMain.transform.localPosition = new Vector3(0, 0, -10);
+		cameraMain.transform.rotation = Quaternion.Euler(0, 0, 0);
+	}
+
+	/// <summary>
+	/// Shake the main camera for a set amount of time
+	/// </summary>
+	/// <param name="intensity">How powerful the shake is</param>
+	/// <param name="length">How long the shake lasts</param>
+	/// <param name="dropoff">1(beginning) to 0(end) when the shaking begins to drop off</param>
+	/// <param name="downTick">The interval the shake is reduced by mult by deltatime</param>
+	/// <returns>IEnumerator</returns>
+	IEnumerator ShakeMainCamera(float intensity, float length, float dropoff, float downTick)
+	{
+		float angle;
+		float offsetX;
+		float offsetY;
+
+		float currentCameraTime = length;
+		while (currentCameraTime > 0)
+		{
+			angle = 10 * intensity * UnityEngine.Random.Range(-1, 1);
+			offsetX = 1 * intensity * UnityEngine.Random.Range(-1, 1);
+			offsetY = 1 * intensity * UnityEngine.Random.Range(-1, 1);
+
+			cameraMain.transform.rotation = Quaternion.Euler(0, 0, angle);
+			cameraMain.transform.position = new Vector3(offsetX, offsetY, -10);
+			currentCameraTime -= Time.deltaTime;
+
+			if(currentCameraTime/length < dropoff)
+			{
+				if (intensity > 0)
+				{
+					intensity -= downTick * Time.deltaTime;
+					if(intensity < 0)
+					{
+						intensity = 0;
+					}
+				}
+			}
+
+			yield return new WaitForSeconds(0);
+		}
+
+		cameraMain.transform.localPosition = new Vector3(0, 0, -10);
+		cameraMain.transform.rotation = Quaternion.Euler(0, 0, 0);
 	}
 
 	public void SetGameOver(string uiText)
 	{
 		gameOver = true;
 		GOUI.SetActive(true);
+		GOUI.GetComponentInChildren<Animator>().Play("GameOverUI_In");
 		this.uiText.text = uiText;
 	}
 }

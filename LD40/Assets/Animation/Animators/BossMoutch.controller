@@ -50,7 +50,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Boss_MoutchDeath
+  m_Name: Boss_MoutchOpen
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -80,7 +80,7 @@ AnimatorStateMachine:
     m_Position: {x: 288, y: 132, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102782267250171974}
-    m_Position: {x: 288, y: 228, z: 0}
+    m_Position: {x: 240, y: 252, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []

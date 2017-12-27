@@ -258,9 +258,11 @@ MonoBehaviour:
   health: 10
   killable: 1
   deathAnimation: 1
+  hurtSound: 1
   deathSound: 1
   hurtAnim: {fileID: 7400000, guid: 6dadcacc1a212fe4b8a96705cd5112b3, type: 2}
   deathAnim: {fileID: 7400000, guid: bb292371ec7275b468caa99b3ec53bbe, type: 2}
+  hurtSoundClip: {fileID: 8300000, guid: a2b70d0643167bb489233b79679f44bb, type: 3}
   deathSoundClip: {fileID: 8300000, guid: 3f375b57e3b66d84c91bee8578b4e8a7, type: 3}
   hurtParticles: {fileID: 198675562130831142}
   startDead: 0
@@ -280,8 +282,9 @@ MonoBehaviour:
   state: 0
   bulletPrefab: {fileID: 1548960569452654, guid: 46abf368438c5b148a8f3a87f9f7c8d0,
     type: 2}
-  shootInterval: 2
-  bulletSpeed: -5
+  shootInterval: 1.5
+  bulletSpeed: -7
+  shootSoundClip: {fileID: 8300000, guid: 0dfc44a749342b042bf94a24740aca80, type: 3}
 --- !u!198 &198675562130831142
 ParticleSystem:
   m_ObjectHideFlags: 1

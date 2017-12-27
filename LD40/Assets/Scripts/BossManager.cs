@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BossStates {Reveal, Formation, Turn, Fight, Death}
+public enum BossStates {Reveal, Formation, Turn, Fight, Death, Dead}
 
 public class BossManager : MonoBehaviour {
 
 	//Fields
 	public BossStates state;
 	public Transform[] formationPositions;
+	public ParticleSystem[] eyeSparkles;
 	public List<Transform> minions;
 	public GameObject bossPrefab;
 	Transform boss;
 	Vector2 bossPosition;
+
+	public AudioClip turnSound;
 
 	//Boss setup vars
 	public float speed;
@@ -20,10 +23,25 @@ public class BossManager : MonoBehaviour {
 	public bool wait;
 	float waitTimer;
 	public bool minionsTurned;
+	public GameObject flashPrefab;
 
 	public BackgroundMover bgMove;
 	public AudioClip bossMusic;
 
+	//Boss death vars
+	float deathTimer;
+	float deathInterval;
+	public bool BossAtPosition
+	{
+		get
+		{
+			if (boss != null)
+			{
+				return boss.position.y == 3.8f;
+			}
+			else return false;
+		}
+	}
 	//Singleton
 	private static BossManager bossManager;
 
@@ -65,6 +83,7 @@ public class BossManager : MonoBehaviour {
 		waitTimer = 2;
 		minionsTurned = false;
 		bossCreated = false;
+		deathTimer = 0;
 	}
 
 	// Use this for initialization
@@ -92,6 +111,7 @@ public class BossManager : MonoBehaviour {
 				}
 				else if (!wait)
 				{
+					boss.position = new Vector2(0, 3.8f);
 					wait = true;
 					waitTimer = 2;
 				}
@@ -105,7 +125,7 @@ public class BossManager : MonoBehaviour {
 						wait = false;
 						state = BossStates.Formation;
 						AssignFormationPos();
-						Camera.main.GetComponent<AudioSource>().clip = null;
+						StartCoroutine(FadeOutAudio());
 					}
 				}
 			}
@@ -134,9 +154,11 @@ public class BossManager : MonoBehaviour {
 			{
 				if(!minionsTurned)
 				{
+					Instantiate(flashPrefab);
+					boss.GetComponent<Boss>().turnParticles.Play();
 					TurnMinions();
 					wait = true;
-					waitTimer = 2;
+					waitTimer = 3;
 				}
 				//Wait after turning the minions evil and the fight
 				if (wait)
@@ -148,36 +170,47 @@ public class BossManager : MonoBehaviour {
 						state = BossStates.Fight;
 						SetFightState();
 						Camera.main.GetComponent<AudioSource>().clip = bossMusic;
+						Camera.main.GetComponent<AudioSource>().volume = 0.5f;
 						Camera.main.GetComponent<AudioSource>().Play();
 					}
 				}
 			}
-			//Fighting the player
-			else if (state == BossStates.Fight)
+			//Death animations
+			else if(state == BossStates.Death && minions.Count > 0)
 			{
-				if(boss.GetComponent<Boss>().Dead)
+				deathTimer += Time.deltaTime;
+				if(deathTimer > deathInterval)
 				{
-					state = BossStates.Death;
+					deathTimer = 0;
+					Minion m = minions[minions.Count - 1].GetComponent<Minion>();
+					minions.RemoveAt(minions.Count - 1);
+					m.Destroy();
 				}
 			}
-			//Death
-			else if (state == BossStates.Death)
+			//Boss is dead and animations are over
+			else if (state == BossStates.Dead)
 			{
 				if(GameManager.Instance.gameOver != true)
 				{
 					GameManager.Instance.gameOver = true;
 					GameManager.Instance.SetGameOver("The end.");
-					foreach (Transform m in minions)
-					{
-						Destroy(m.gameObject);
-					}
 				}
 			}
 		}
 	}
 
-	//Assign the minions their position in the formation
-	public void AssignFormationPos()
+	IEnumerator FadeOutAudio()
+	{
+		while (Camera.main.GetComponent<AudioSource>().volume > 0)
+		{
+			Camera.main.GetComponent<AudioSource>().volume -= 0.05f;
+			yield return new WaitForSeconds(0.1f);
+		}
+		Camera.main.GetComponent<AudioSource>().clip = null;
+	}
+
+		//Assign the minions their position in the formation
+		public void AssignFormationPos()
 	{
 		for (int i = 0; i < minions.Count; i++)
 		{
@@ -189,6 +222,8 @@ public class BossManager : MonoBehaviour {
 	//Turn the minions into baddies
 	public void TurnMinions()
 	{
+		Camera.main.GetComponent<AudioSource>().PlayOneShot(turnSound, 0.75f);
+		Camera.main.GetComponent<AudioSource>().volume = 0.75f;
 		for (int i = 0; i < minions.Count; i++)
 		{
 			//Turn the minion evil
@@ -204,6 +239,7 @@ public class BossManager : MonoBehaviour {
 	{
 		boss.GetComponent<Boss>().state = EnemyStates.Fight;
 		boss.GetComponent<Boss>().StartAttacks();
+		boss.GetComponent<Boss>().SparkleEyes();
 		foreach(Transform m in minions)
 		{
 			//Turn the minion evil
@@ -231,5 +267,13 @@ public class BossManager : MonoBehaviour {
 		bossPosition = bgMove.bossBG.position;
 		bossPosition.y += 4.2f;
 		boss = Instantiate(bossPrefab, bossPosition, Quaternion.identity).transform;
+	}
+
+	public void SetMinionExplodeInterval()
+	{
+		if (minions.Count > 0)
+		{
+			deathInterval = 3f / minions.Count;
+		}
 	}
 }

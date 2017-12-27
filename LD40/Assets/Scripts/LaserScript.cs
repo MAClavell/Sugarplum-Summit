@@ -8,11 +8,9 @@ public class LaserScript : MonoBehaviour {
 	public float maxStrech;
 	Vector2 position;
 	Vector2 scale;
-	Transform spriteTransform;
 
 	// Use this for initialization
 	void Start () {
-		spriteTransform = transform.Find("sprite");
 		position = transform.position;
 		scale = transform.localScale;
 	}

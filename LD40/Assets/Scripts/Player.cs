@@ -25,12 +25,14 @@ public class Player : MonoBehaviour {
 	//Damage vars
 	public bool invincible;
 	float invinTimer;
+	public AudioClip hurtSound;
 
 	//Shooting vars
 	public GameObject bulletPrefab;
 	public float shootInterval;
 	public float bulletSpeed;
 	float shootTimer;
+	public ParticleSystem hurtParticles;
 
 	//Minion vars
 	public GameObject minionPrefab;
@@ -94,18 +96,18 @@ public class Player : MonoBehaviour {
 
 		if (followAtt.move == true) followAtt.move = false;
 
-		if (Input.GetKey(KeyCode.W))
+		if (Input.GetAxis("Vertical") > 0)
 		{
 			position.y += moveSpeed * Time.deltaTime;
 			followAtt.move = true;
 		}
-		else if (Input.GetKey(KeyCode.S))
+		else if (Input.GetAxis("Vertical") < 0)
 		{
 			position.y -= moveSpeed * Time.deltaTime;
 			followAtt.move = true;
 		}
 
-		if (Input.GetKey(KeyCode.A))
+		if (Input.GetAxis("Horizontal") < 0)
 		{
 			position.x -= moveSpeed * Time.deltaTime;
 			followAtt.move = true;
@@ -114,7 +116,7 @@ public class Player : MonoBehaviour {
 				moveState = MoveState.Left;
 			}
 		}
-		else if (Input.GetKey(KeyCode.D))
+		else if (Input.GetAxis("Horizontal") > 0)
 		{
 			position.x += moveSpeed * Time.deltaTime;
 			followAtt.move = true;
@@ -249,12 +251,14 @@ public class Player : MonoBehaviour {
 	//Collision detection
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if ((collision.tag == "Enemy" || collision.tag == "BulletEnemy") && !invincible && !Dead)
+		if ((collision.tag == "Enemy" || collision.tag == "BulletEnemy" | collision.tag == "Boss") && !invincible && !Dead)
 		{
 			InvokeRepeating("BlinkSpriteHurt", 0, 0.1f);
 			invinTimer = 1f;
 			lives -= 1;
-			GameManager.Instance.CameraShake(0.1f, 0.2f);
+			GameManager.Instance.CameraShake(0.1f, 0.1f);
+			Camera.main.GetComponent<AudioSource>().PlayOneShot(hurtSound);
+			hurtParticles.Play();
 			if (lives >= 0)
 			{
 				invincible = true;

@@ -121,6 +121,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 10
   spriteObj: {fileID: 0}
+  warningGOprefab: {fileID: 1945260533808490, guid: 61690ae1ccdc2374c9aaaf85bbf8357e,
+    type: 2}
 --- !u!114 &114610342653381438
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -135,9 +137,14 @@ MonoBehaviour:
   health: 0
   killable: 0
   deathAnimation: 0
+  hurtSound: 0
+  deathSound: 0
   hurtAnim: {fileID: 0}
   deathAnim: {fileID: 0}
+  hurtSoundClip: {fileID: 0}
+  deathSoundClip: {fileID: 0}
   hurtParticles: {fileID: 0}
+  startDead: 0
 --- !u!212 &212329731607687948
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -168,7 +175,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -137111777
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 253b75bef0007ac45b3105bb523d4e1e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

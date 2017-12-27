@@ -9,10 +9,12 @@ public class BackgroundMover : MonoBehaviour {
     public float moveRate;
 	public Transform bossBG;
 	bool bossPlaced;
+	bool bossScrolled;
 
 	// Use this for initialization
 	void Start () {
 		bossPlaced = false;
+		bossScrolled = false;
 	}
 	
 	// Update is called once per frame
@@ -40,7 +42,7 @@ public class BackgroundMover : MonoBehaviour {
 			{
 				PlaceBossBackground();
 			}
-			if (bossBG.position.y > -0.3f)
+			if (!bossScrolled && !BossManager.Instance.BossAtPosition)
 			{
 				foreach (Transform bg in bgs)
 				{
@@ -48,6 +50,10 @@ public class BackgroundMover : MonoBehaviour {
 					bg.position -= new Vector3(0, moveRate * Time.deltaTime, 0);
 				}
 				bossBG.position -= new Vector3(0, moveRate * Time.deltaTime, 0);
+			}
+			else
+			{
+				bossScrolled = true;
 			}
 		}
     }

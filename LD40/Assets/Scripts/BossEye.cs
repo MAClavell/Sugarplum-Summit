@@ -6,6 +6,7 @@ public class BossEye : MonoBehaviour {
 
 	public int health;
 	public ParticleSystem hurtParticles;
+	public ParticleSystem sparkleParticles;
 	public Sprite hurtSpriteEye;
 	public Sprite hurtSpritePupil;
 	SpriteRenderer sprite;
@@ -35,6 +36,7 @@ public class BossEye : MonoBehaviour {
 		sprite.sprite = hurtSpriteEye;
 		spritePupil.sprite = hurtSpritePupil;
 		spritePupil.transform.localScale = new Vector3(2.5f, 1.5f, 2.5f);
+		sparkleParticles.Stop();
 		Camera.main.GetComponent<AudioSource>().PlayOneShot(deathSound);
 	}
 

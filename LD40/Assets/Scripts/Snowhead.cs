@@ -8,6 +8,9 @@ public class Snowhead : MonoBehaviour {
 	public float rotationSpeed;
 	public Transform spriteObj;
 
+	//Warning vars
+	public GameObject warningGOprefab;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -28,7 +31,7 @@ public class Snowhead : MonoBehaviour {
 		if(dir < 0.5f)
 		{
 			float leftBound = EnemyManager.Instance.leftBound;
-			position = new Vector2(Random.Range(leftBound, midBound), topBound);
+			position = new Vector2(Random.Range(leftBound, midBound), topBound+2);
 			force = new Vector2(50, 0);
 			rotationSpeed = -rotationSpeed;
 		}
@@ -36,13 +39,16 @@ public class Snowhead : MonoBehaviour {
 		else
 		{
 			float rightBound = EnemyManager.Instance.rightBound;
-			position = new Vector2(Random.Range(midBound, rightBound), topBound);
+			position = new Vector2(Random.Range(midBound, rightBound), topBound+2);
 			force = new Vector2(-50, 0);
 		}
 
 		transform.position = position;
 
 		GetComponent<Rigidbody2D>().AddForce(force);
+
+		GameObject warn = Instantiate(warningGOprefab);
+		warn.GetComponent<SnowheadWarningScript>().Create(transform, spriteObj);
 	}
 	
 	// Update is called once per frame

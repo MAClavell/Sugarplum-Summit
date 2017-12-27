@@ -18,6 +18,7 @@ public class Nutcracker : MonoBehaviour {
 	public float shootInterval;
 	public float bulletSpeed;
 	float shootTimer;
+	public AudioClip shootSoundClip;
 
 	// Use this for initialization
 	void Start()
@@ -79,6 +80,7 @@ public class Nutcracker : MonoBehaviour {
 			shootTimer = shootInterval;
 			Transform bullet = Instantiate(bulletPrefab).transform;
 			bullet.GetComponent<BulletScript>().Create(transform.Find("Shoot_Point").position, bulletSpeed, false, Vector2.zero);
+			Camera.main.GetComponent<AudioSource>().PlayOneShot(shootSoundClip);
 		}
 	}
 

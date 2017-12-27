@@ -11,9 +11,20 @@ public class Boss : MonoBehaviour {
 	public int health;
 	Transform player;
 	public GameObject laserPrefab;
+	Animator deathAnimator;
 	public AnimationClip bossDeathAnim;
 	public AudioClip hurtSound;
 	public AudioClip deathSound;
+	public AudioClip laserSound;
+	public AudioClip chargeUpSound;
+	public ParticleSystem hurtParticles;
+	public ParticleSystem succParticles;
+	public ParticleSystem turnParticles;
+	public ParticleSystem[] eyeSparkles;
+
+	public Animator moutchAnimator;
+	public AnimationClip bossMoutchIdle;
+	public AnimationClip bossMoutchOpen;
 
 	//Whether any eyes are alive
 	int EyesAlive
@@ -45,6 +56,7 @@ public class Boss : MonoBehaviour {
 		eyePupils = new Animator[2];
 		eyePupils[0] = eyes[0].Find("sprite_pupil").GetComponent<Animator>();
 		eyePupils[1] = eyes[1].Find("sprite_pupil").GetComponent<Animator>();
+		deathAnimator = transform.Find("BossParent").GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -68,6 +80,12 @@ public class Boss : MonoBehaviour {
 		StartCoroutine(Attack());
 	}
 
+	public void SparkleEyes()
+	{
+		eyeSparkles[0].Play();
+		eyeSparkles[1].Play();
+	}
+
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if(BossManager.Instance.state == BossStates.Fight && EyesAlive == 0 && collision.tag == "Bullet" && !Dead)
@@ -75,10 +93,18 @@ public class Boss : MonoBehaviour {
 			health -= 1;
 			Destroy(collision.gameObject);
 			Camera.main.GetComponent<AudioSource>().PlayOneShot(hurtSound);
+			hurtParticles.Play();
 			if(Dead)
 			{
 				Kill();
+				BossManager.Instance.SetMinionExplodeInterval();
+				BossManager.Instance.state = BossStates.Death;
 			}
+		}
+		else if(BossManager.Instance.state == BossStates.Death && 
+			deathAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+		{
+			BossManager.Instance.state = BossStates.Dead;
 		}
 	}
 
@@ -97,7 +123,7 @@ public class Boss : MonoBehaviour {
 			yield return new WaitForSeconds(0.5f);
 		}
 
-		while (health > 60)
+		while (health > 80)
 		{
 			HomingAttack();
 			yield return new WaitForSeconds(0.4f);
@@ -252,6 +278,9 @@ public class Boss : MonoBehaviour {
 				//Generate direction of laser
 				laserDir = Random.Range(0, 2);
 				laserPlayedAnim = false;
+				moutchAnimator.Play(bossMoutchOpen.name);
+				succParticles.Play();
+				Camera.main.GetComponent<AudioSource>().PlayOneShot(chargeUpSound, 1.5f);
 			}
 		}
 		//Eye warning
@@ -275,9 +304,12 @@ public class Boss : MonoBehaviour {
 			{
 				laserState = 2;
 				laserTimer = laserRotateDelay;
-				laser = Instantiate(laserPrefab, transform.Find("moutch_sprite").position, Quaternion.identity).transform;
+				laser = Instantiate(laserPrefab, transform.Find("BossParent").Find("moutch_sprite").position, Quaternion.identity).transform;
+				Camera.main.GetComponent<AudioSource>().PlayOneShot(laserSound, 1.5f);
+				succParticles.Stop();
 				laserAngle = 0;
 				laserPlayedAnim = false;
+				GameManager.Instance.CameraShake(0.1f, laserDelay+laserRotateDelay, 0.1f, 0.2f);
 			}
 		}
 		//Laser spawning
@@ -299,6 +331,7 @@ public class Boss : MonoBehaviour {
 				laserState = 0;
 				laserTimer = laserWaitDelay;
 				Destroy(laser.gameObject);
+				moutchAnimator.Play(bossMoutchIdle.name);
 			}
 
 			//Left
@@ -406,12 +439,12 @@ public class Boss : MonoBehaviour {
 	{
 		if (laser != null)
 		{
-			Destroy(laser);
+			Destroy(laser.gameObject);
 		}
-		transform.Find("moutch_sprite").GetComponent<Animator>().Play("Boss_MoutchDeath");
+		transform.Find("BossParent").transform.Find("moutch_sprite").GetComponent<Animator>().Play("Boss_MoutchOpen");
 		Camera.main.GetComponent<AudioSource>().PlayOneShot(deathSound);
-		//GetComponent<Animator>().Play(bossDeathAnim.name);
-		Destroy(gameObject, bossDeathAnim.length);
+		deathAnimator.Play(bossDeathAnim.name);
+		Destroy(gameObject, bossDeathAnim.length+1);
 	}
 
 	//Have the minion at the specified index shoot
